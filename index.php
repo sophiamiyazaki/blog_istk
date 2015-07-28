@@ -1,26 +1,19 @@
 <?php
 	require_once('db_connect.php');
-
 	$query = $db->query('SELECT entryID, entryTitle, entryContent, entryDate FROM blog_posts ORDER BY entryID DESC');
 ?>
 
-<style>
-.entry-list {
-	background-color: #fefefe;
-	font-family: Verdana, Arial;
-	font-size: 14px;
-	padding: 10px;
-}
-.entry-list div.item {
-	padding: 5px 10px;
-	border-bottom: 1px dotted #eee;
-}
-</style>
+<link rel="stylesheet" href="css/main.css" type="text/css">
 
-<div class="entry-list">
+<h1 class="rc">iStock Blog</h1>
+
+<div class="entry-list rc">
+<h2>--- Past Listings ---</h2>
 <?php while ($row = $query->fetch()): ?>
 	<div class="item">
-		<span>Title</span>: <?= $row['entryTitle'] ?>
+		<h3 class="title"><?= $row['entryTitle']; ?></h3>
+		<div class="tiny author">- <? echo $row['entryAuthor']; ?></div>
+		<?= $row['entryContent']; ?>
 	</div>
 <?php endwhile; ?>
 </div>
