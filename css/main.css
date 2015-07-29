@@ -33,3 +33,6 @@ h2 {
 .author {
 	float: right;
 }
+.admin {
+	border: 1px dotted #990000;
+}
