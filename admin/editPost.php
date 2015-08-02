@@ -1,21 +1,23 @@
 <?php
 	require_once('../includes/header.php');
+	$stmt = $db->prepare('SELECT entryID, entryTitle, entryContent FROM blog_posts WHERE entryID = :entryID') ;
+	$stmt->execute(array(':entryID' => $_GET['editid']));
+	$row = $stmt->fetch();
 ?>
 
 <?php
 
 try {
 	if(isset($_POST['submit'])){
-		$stmt = $db->prepare('INSERT INTO blog_posts (entryTitle, entryContent, entryDate, entryAuthor) VALUES (:entryTitle, :entryContent, :entryDate, :entryAuthor)');
+		$stmt = $db->prepare('UPDATE blog_posts SET entryTitle = :entryTitle, entryContent = :entryContent WHERE entryID = :entryID');
                 $stmt->execute(array(
                     ':entryTitle' => $_POST['entryTitle'],
                     ':entryContent' => $_POST['entryContent'],
-                    ':entryDate' => date('Y-m-d H:i:s'),
-                    ':entryAuthor' => $_POST['entryAuthor']
+                    ':entryID' => $_POST['entryID']
                 ));
 
                 //redirect to index page
-                header('Location: index.php?action=added');
+                header('Location: index.php?action=updated');
                 exit;
 	}
 } catch(PDOException $e) {
@@ -24,20 +26,17 @@ try {
 ?>
 
 <div class="entry-list rc admin">
-	<h2>--- Add a New Listing ---</h2>
+	<h2>Update Your Listing</h2>
 	
 	<form action='' method='post'>
+		<input type='hidden' name='entryID' value='<?= $row['entryID'];?>'>
 		<div class="form-row">
 			<label>Title</label>
-			<input type='text' name='entryTitle' value=''>
+			<input type='text' name='entryTitle' value='<?= $row['entryTitle'];?>'>
 		</div>
 		<div class="form-row">
 			<label>Content</label>
-			<textarea name='entryContent' cols='60' rows='10'></textarea>
-		</div>
-		<div class="form-row">
-			<label>Author</label>
-			<input type='text' name='entryAuthor' value='' />
+			<textarea name='entryContent' cols='60' rows='10'><?= $row['entryContent'];?></textarea>
 		</div>
 		<div class="form-row">
 			<label></label>

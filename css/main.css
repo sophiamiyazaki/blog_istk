@@ -12,16 +12,18 @@ h1 {
 h2 {
 
 	font-size: 1.2em;
+	border-bottom: 2px solid #eee;
 }
 .title {
 	font-color: #729829;
 }
 .rc {
-	border-radius: 15px;
+	border-radius: 8px;
 }
 .entry-list {
 	background-color: #fefefe;
-	padding: 10px;
+	padding: 10px 20px;
+	margin: 10px 0;
 }
 .entry-list div.item {
 	padding: 5px 10px;
@@ -35,4 +37,14 @@ h2 {
 }
 .admin {
 	border: 1px dotted #990000;
+}
+.form-row {
+	padding: 5px 0;
+}
+label {
+	float: left;
+	width: 10%;
+}
+.red {
+	color: #990000;
 }
