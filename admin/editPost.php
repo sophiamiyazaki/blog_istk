@@ -7,38 +7,60 @@
 
 <?php
 
-try {
 	if(isset($_POST['submit'])){
-		$stmt = $db->prepare('UPDATE blog_posts SET entryTitle = :entryTitle, entryContent = :entryContent WHERE entryID = :entryID');
-                $stmt->execute(array(
-                    ':entryTitle' => $_POST['entryTitle'],
-                    ':entryContent' => $_POST['entryContent'],
-                    ':entryID' => $_POST['entryID']
-                ));
-
-                //redirect to index page
-                header('Location: index.php?action=updated');
-                exit;
+	
+		// easy validation
+		if($_POST['entryTitle'] ==''){
+		    $error[] = 'Please enter a title.';
+		}
+		
+		if($_POST['entryContent'] ==''){
+		    $error[] = 'Please enter some interesting content.';
+		}
+		
+		if (!isset($error)) {
+		
+			try {
+				$stmt = $db->prepare('UPDATE blog_posts SET entryTitle = :entryTitle, entryContent = :entryContent WHERE entryID = :entryID');
+		                $stmt->execute(array(
+		                    ':entryTitle' => $_POST['entryTitle'],
+		                    ':entryContent' => $_POST['entryContent'],
+		                    ':entryID' => $_POST['entryID']
+		                ));
+		
+		                //redirect to index page
+		                header('Location: index.php?action=updated&isAdmin=true');
+		                exit;
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
+		
+		if(isset($error)){
+			echo '<div class="alert alert-warning" role="alert">';
+		        foreach($error as $error){
+		            echo $error . '<br/>';
+		        }
+		        echo '</div>';
+	    	}
 	}
-} catch(PDOException $e) {
-	echo $e->getMessage();
-}
+			
 ?>
 
-<div class="entry-list rc admin">
+<div class="entry-list rc">
 	<h2>Update Your Listing</h2>
 	
 	<form action='' method='post'>
 		<input type='hidden' name='entryID' value='<?= $row['entryID'];?>'>
-		<div class="form-row">
+		<div class='form-group'>
 			<label>Title</label>
-			<input type='text' name='entryTitle' value='<?= $row['entryTitle'];?>'>
+			<input type='text' class='form-control' name='entryTitle' value='<?= $row['entryTitle'];?>'>
 		</div>
-		<div class="form-row">
+		<div class='form-group'>
 			<label>Content</label>
-			<textarea name='entryContent' cols='60' rows='10'><?= $row['entryContent'];?></textarea>
+			<textarea name='entryContent' class='form-control' cols='60' rows='10'><?= $row['entryContent'];?></textarea>
 		</div>
-		<div class="form-row">
+		<div class='form-group'>
 			<label></label>
 			<input type='submit' name='submit' value='Submit' />
 		</div>
