@@ -63,6 +63,7 @@ textarea {
 .comments {
 	border: 1px dotted #9CCAA5;
 	padding: 10px 15px;
+	margin-top: 10px;
 }
 .comments label {
 	font-weight: normal;

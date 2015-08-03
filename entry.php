@@ -8,7 +8,7 @@
 		$date = date("F j, Y, g:i a", strtotime($row['entryDate']));
 	}
 	
-	$cstmt = $db->prepare('SELECT commentContent, commentDate, commentAuthor FROM blog_comments WHERE blogEntryID = :blogEntryID ORDER BY commentID DESC') ;
+	$cstmt = $db->prepare('SELECT commentID, commentContent, commentDate, commentAuthor FROM blog_comments WHERE blogEntryID = :blogEntryID ORDER BY commentID DESC') ;
 	$cstmt->execute(array(':blogEntryID' => $_GET['id']));
 	
 	//handle comment submission
@@ -51,6 +51,17 @@
 		        echo '</div>';
 	    	}
 	}
+	
+	//handle comment deletion
+	if(isset($_GET['deletecomment'])){ 
+		$stmt = $db->prepare('DELETE FROM blog_comments WHERE commentID = :commentID') ;
+		$stmt->execute(array(':commentID' => $_GET['deletecomment']));
+		
+		$id = $_GET['id'];
+		header('Location: ?id=' . $id . '&action=commentdeleted&isAdmin=true');
+		exit;
+	}
+
 ?>
 
 <h1 class="rc">iStock Blog</h1>
@@ -69,13 +80,15 @@
 		<? endif; ?>
 	
 		<div class="comments">
+			<? //var_dump($cstmt->fetch()); ?>
 			<h4>Comments</h4>
-			<?php if (!$crow = $cstmt->fetch()) : ?>
+			<?php if (!$cstmt->fetch()) : ?>
 				Aww. No one has commented yet. Be the first!
 			<?php endif; ?>
 			
 			<?php while ($crow = $cstmt->fetch()): ?>
 				<? 
+					//var_dump('am i here');
 					$cdate = 'a whim, who knows when';
 					if ($crow['commentDate'] != '0000-00-00 00:00:00') {
 						$cdate = date("F j, Y, g:i a", strtotime($crow['commentDate']));
@@ -84,6 +97,9 @@
 				<div class="item">
 					<?= $crow['commentContent']; ?><br/>
 					<div class="tiny author">by <? echo ($crow['commentAuthor'] ? $crow['commentAuthor'] : 'anonymous'); ?> on <?= $cdate; ?></div>
+					<? if ($_SESSION['isAdmin']) : ?>
+						<a class="btn btn-danger btn-sm" role="button" href="?id=<?= $row['entryID']; ?>&deletecomment=<?= $crow['commentID']; ?>&isAdmin=true">delete</a>
+					<? endif; ?>
 				</div>
 			<?php endwhile; ?>
 		
