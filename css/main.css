@@ -59,3 +59,11 @@ textarea {
 .content {
 	padding: 10px;
 }
+
+.comments {
+	border: 1px dotted #9CCAA5;
+	padding: 10px 15px;
+}
+.comments label {
+	font-weight: normal;
+}
